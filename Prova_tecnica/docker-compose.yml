@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   web:
@@ -29,7 +28,7 @@ services:
       - app_network
 
   mail:
-    image: catatnight/postfix
+    image: bytemark/smtp
     container_name: postfix_server
     restart: always
     environment:
