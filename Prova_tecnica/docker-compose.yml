@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  web:
+    build: ./web
+    container_name: php_apache
+    ports:
+      - "80:80"
+    volumes:
+      - ./web:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - app_network
+
+  db:
+    image: mariadb:latest
+    container_name: mariadb_server
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: prueba_tecnica
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app_network
+
+  mail:
+    image: catatnight/postfix
+    container_name: postfix_server
+    restart: always
+    environment:
+      - MAIL_DOMAIN=localhost
+      - SMTP_SERVER=smtp
+    ports:
+      - "25:25"
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  db_data:
